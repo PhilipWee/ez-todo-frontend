@@ -47,7 +47,7 @@
   };
 </script>
 
-<div class="button">
+<div>
   {#if $workspace !== null}
     <div>Current Workspace</div>
     <form on:submit|preventDefault={onSubmit}>
@@ -78,6 +78,3 @@
   {/if}
 </div>
 
-<style lang="scss">
-  @import "./common-styles";
-</style>

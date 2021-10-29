@@ -1,12 +1,14 @@
 <script lang="ts">
-  import Todo from "../components/Todo.svelte";
-  import Button from "../components/Button.svelte";
-  import WorkspaceSelect from '../components/WorkspaceSelect.svelte'
-
+  import WorkspaceSelect from "../components/WorkspaceSelect.svelte";
   import { getEnv } from "../stores/setup-env";
   import { user, userTodos, workspace } from "../stores/user-data";
-
   import { customFetch } from "../utils/custom-fetch";
+  import SideBarButton from "../components/SideBarButton.svelte";
+  import Todo from "../components/Todo.svelte";
+  import NewTask from "../components/assets/NewTask.svelte";
+  import AddFriend from "../components/assets/AddFriend.svelte";
+  import Filter from "../components/assets/Filter.svelte";
+  import Logout from "../components/assets/Logout.svelte";
 
   let ENV = getEnv();
 
@@ -16,7 +18,7 @@
       creatorId: $user.id,
       workspaceId: $workspace.id,
     });
-    await user.refresh()
+    await user.refresh();
   };
 
   const logout = () => {
@@ -24,13 +26,18 @@
   };
 
   const addToWorkspaceAlert = () => {
-    const userId = prompt("Friend ID")
-    addToWorkspace(userId, $workspace.id)
-  }
+    const userId = prompt("Friend ID");
+    addToWorkspace(userId, $workspace.id);
+  };
 
-  const addToWorkspace = async (userId: number|string, workspaceId?: number) => {
-    const result = await customFetch.post(`/workspace/${workspaceId}/add-user/${userId}`)
-    console.log(result)
+  const addToWorkspace = async (
+    userId: number | string,
+    workspaceId?: number
+  ) => {
+    const result = await customFetch.post(
+      `/workspace/${workspaceId}/add-user/${userId}`
+    );
+    console.log(result);
   };
 
   const initWorkspace = (async () => {
@@ -53,25 +60,54 @@
     {/each}
   </div>
   <div class="col2">
-    <WorkspaceSelect/>
-    <Button text="New Task" onClick={newTask} />
-    <Button text="Add Friend To Workspace" onClick={addToWorkspaceAlert} />
-    <Button text="Filter" onClick={() => {}} />
-    <Button text="Logout" onClick={logout} />
+    <!-- <SideBarButton>
+      <WorkspaceSelect slot="contents" />
+    </SideBarButton> -->
+
+    <!-- TODO: Make spacing a little less weird -->
+    <SideBarButton onClick={newTask}>
+      <NewTask slot="logo" />
+      <div slot="contents">New Task</div>
+    </SideBarButton>
+    <SideBarButton onClick={addToWorkspaceAlert}>
+      <AddFriend slot="logo" />
+      <div slot="contents">Invite Friend</div>
+    </SideBarButton>
+    <SideBarButton>
+      <Filter slot="logo" />
+      <div slot="contents">Filter</div>
+    </SideBarButton>
+    <SideBarButton onClick={logout}>
+      <Logout slot="logo" />
+      <div slot="contents">Logout</div>
+    </SideBarButton>
   </div>
 </div>
 
-<style>
+<style lang="scss">
+  @import "../theme/default.scss";
+
   .container {
     display: flex;
-    /* flex-direction: row; */
   }
 
   .col1 {
-    flex-grow: 3;
+    flex-grow: 1;
+    overflow-y: scroll;
+    max-height: 90vh;
+    margin-right: 1em;
   }
 
   .col2 {
-    flex-grow: 1;
+    width: 5em;
+    display: flex;
+    align-items: end;
+    flex-direction: column;
+  }
+
+  @media only screen and (min-width: $small-bp) {
+    .col2 {
+      width: 20em;
+    }
   }
 </style>

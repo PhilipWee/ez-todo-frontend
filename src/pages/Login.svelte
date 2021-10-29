@@ -1,22 +1,35 @@
 <script>
   import { getEnv } from "../stores/setup-env";
+  import Button from "../components/Button.svelte"
 
-  let ENV = getEnv()
+  let ENV = getEnv();
 
   const googleLogin = () => {
-    window.location = `${ENV.BACKEND_URL}/user/auth/google/login`
+    window.location = `${ENV.BACKEND_URL}/user/auth/google/login`;
   };
 </script>
 
-<div class="centered-child max-width-lg">
-  <button on:click={googleLogin}>Login with Google</button>
+<div class="centered-child">
+  <div class="padded-center">
+    <h1>Complete Tasks. Get Memes.</h1>
+    <Button onClick={googleLogin}>
+      Login with Google
+    </Button>
+  </div>
 </div>
 
-<style>
+<style lang="scss">
+  @import "../theme/default";
+
+  .padded-center {
+    padding: 2rem;
+  }
+
   .centered-child {
-    display: grid;
-    place-items: center;
-    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 100%;
+    height: 80vh;
   }
 </style>
