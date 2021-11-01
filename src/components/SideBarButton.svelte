@@ -1,11 +1,12 @@
 <script lang="ts">
   export let onClick: (e) => any = () => {};
+  export let expanded: boolean = false;
 </script>
 
 <div class="sidebar" on:click={onClick}>
   <div class="inner">
     <slot name="logo" />
-    <div class="contents">
+    <div class:contents={!expanded}>
       <slot name="contents" />
     </div>
   </div>

@@ -2,25 +2,28 @@
   import Login from "./pages/Login.svelte";
   import Todos from "./pages/Todos.svelte";
   import { user } from "./stores/user-data";
-  
+  import Modal from "svelte-simple-modal";
+
   const fetchProfile = user.refresh();
 </script>
 
-<div class="outer-container">
-  <div class="max-width-lg">
-    {#await fetchProfile}
-      <div></div>
-    {:then}
-      {#if $user}
-        <Todos />
-      {:else}
-        <Login />
-      {/if}
-    {:catch err}
-      <div>{String(err)}</div>
-    {/await}
+<Modal>
+  <div class="outer-container">
+    <div class="max-width-lg">
+      {#await fetchProfile}
+        <div />
+      {:then}
+        {#if $user}
+          <Todos />
+        {:else}
+          <Login />
+        {/if}
+      {:catch err}
+        <div>{String(err)}</div>
+      {/await}
+    </div>
   </div>
-</div>
+</Modal>
 
 <style lang="scss">
   @import "theme/default";

@@ -1,7 +1,18 @@
 <script lang="ts">
-  import { user, Workspace } from "../stores/user-data";
+  import { user, workspace, Workspace } from "../stores/user-data";
   import { customFetch } from "../utils/custom-fetch";
   import Tick from "./assets/Tick.svelte";
+  import Expand from "./assets/Expand.svelte";
+  import EditorJS from "@editorjs/editorjs";
+  import List from "@editorjs/list";
+  import CheckList from "@editorjs/checklist";
+  import AddAssignee from "../components/assets/Add.svelte";
+  import { getContext } from "svelte";
+  import AssignTodoPopup from "./AssignTodoPopup.svelte";
+
+  //URGENT TODO: Fix bug where leaving the page too early does not save content for editor JS
+  //URGENT TODO: Somehow make typing the text confirm save the values
+  //TODO: Make ctrl-s save
 
   export let todoData: {
     id: number;
@@ -9,11 +20,48 @@
     desc: string;
     priority: "low" | "med" | "high";
     creator: string;
-    assignees?: Array<string>;
+    assignees?: Array<any>;
     workspace: Workspace;
     deadline: Date;
     completed: boolean;
   };
+
+  const { open } = getContext("simple-modal");
+
+  const showAssignTodoPopup = () => {
+    open(AssignTodoPopup, {
+      workspaceId: todoData.workspace.id,
+      assignees: todoData.assignees,
+      todoId: todoData.id,
+    });
+  };
+
+  let descriptionData = undefined;
+
+  if (todoData.desc !== "") {
+    try {
+      descriptionData = JSON.parse(todoData.desc);
+    } catch (e) {
+      //Malformed data, we just don't render for now
+      console.log("Malformed Data:", e);
+    }
+  }
+
+  new EditorJS({
+    holder: `editor-${todoData.id}`,
+    tools: {
+      list: List,
+      checklist: CheckList,
+    },
+    onChange(api, block) {
+      api.saver.save().then((data) => onUpdate("desc", JSON.stringify(data)));
+    },
+    data: descriptionData,
+    //wtf typescript
+    //@ts-ignore
+    logLevel: "ERROR",
+    placeholder: "Task Description",
+  });
 
   let expandedView: boolean = false;
 
@@ -41,48 +89,66 @@
   <label for={`completed-${todoData.id}`} class="checkbox-container padded">
     <Tick />
   </label>
-  <div class="padded">
-    <div class=" vertical">
-      <input
-        type="text"
-        on:change={(e) => onUpdate("summary", e.target["value"])}
-        value={todoData.summary}
-        placeholder="Task Name"
-      />
-      <div>
+  <div class="padded full-width">
+    <div class="vertical">
+      <div class="container">
         <input
-          on:change={(e) => onUpdate("desc", e.target["value"])}
-          value={todoData.desc}
+          type="text"
+          on:change={(e) => onUpdate("summary", e.target["value"])}
+          value={todoData.summary}
+          placeholder="Task Name"
+          id="summary"
         />
+        <div
+          on:click={() => {
+            expandedView = !expandedView;
+          }}
+        >
+          <Expand />
+        </div>
       </div>
+      <div
+        id={`editor-${todoData.id}`}
+        class:editor={"editor"}
+        class:expanded={expandedView}
+      />
       {#if expandedView}
         <div class="container">
-          <div class="item-6">
-            <p>Assignees</p>
-            {#each todoData.assignees || [] as assignee}
-              <p>{assignee}</p>
-            {/each}
-          </div>
+          <div class="item-6" />
           <div class="item-6">
             <p>Deadline</p>
             <p>Today la fak</p>
           </div>
         </div>
       {/if}
-      <div>Workspace: {todoData.workspace.name}</div>
-    </div>
-    <div class="item-1">
-      <select
-        on:change={(e) => onUpdate("priority", e.target["value"])}
-        value={todoData.priority}
-      >
-        <option value="low">Low</option>
-        <option value="med">Medium</option>
-        <option value="high">High</option>
-      </select>
-    </div>
-    <div class="item-1">
-      <button on:click={onDelete}>Delete</button>
+      <div class="container">
+        <div class="bottom-text pr-1">{todoData.workspace.name}</div>
+        <div class="container grow" on:click={showAssignTodoPopup}>
+          {#each todoData.assignees || [] as assignee}
+            <div class="pr-1">
+              <img
+                class="assignee-picture"
+                alt={assignee.googleData.displayName}
+                src={assignee.googleData.photos[0].value}
+              />
+            </div>
+          {/each}
+          <div class="pr-1">
+            <AddAssignee height="1em" />
+          </div>
+        </div>
+        <select
+          on:change={(e) => onUpdate("priority", e.target["value"])}
+          value={todoData.priority}
+        >
+          <option value="low">Low</option>
+          <option value="med">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <div>
+          <button on:click={onDelete}>Delete</button>
+        </div>
+      </div>
     </div>
   </div>
 </div>
@@ -94,7 +160,9 @@
   $border-width: 2px;
   $transition-time: 0.5s;
 
-  
+  .pr-1 {
+    padding-right: 0.5em;
+  }
 
   .hidden {
     display: none;
@@ -102,6 +170,14 @@
 
   .padded {
     padding: 20px;
+  }
+
+  .full-width {
+    width: 100%;
+  }
+
+  .container {
+    display: flex;
   }
 
   .checkbox-container {
@@ -126,5 +202,48 @@
     border-color: rgb(104, 110, 110);
     border-style: solid;
     border-width: $border-width;
+  }
+
+  .scrollable {
+    max-height: 60vh;
+    overflow-y: "scroll";
+  }
+
+  .editor {
+    overflow-y: scroll;
+    height: 2rem;
+    font-size: medium;
+    color: $off-white-dark;
+    padding-right: 2rem;
+    transition: 0.3s;
+  }
+
+  .expanded {
+    height: 200px;
+    transition: 0.3s;
+  }
+
+  #summary {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  #expand {
+    display: flex;
+  }
+
+  .grow {
+    flex-grow: 1;
+  }
+
+  .bottom-text {
+    font-size: small;
+    color: $off-white-dark;
+  }
+
+  .assignee-picture {
+    border-radius: 20%;
+    width: 1em;
+    height: 1em;
   }
 </style>

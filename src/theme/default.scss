@@ -2,6 +2,7 @@
 
 $off-black: #18181b;
 $off-white: #f5f7f6;
+$off-white-dark: #cecece;
 $bright-gray: rgb(58, 60, 65);
 $dark: #292b36;
 
@@ -33,10 +34,9 @@ input[type="text"] {
   border: none;
   background: none;
   color: $off-white;
-  width: 100%;
 
   &:focus {
-    border: none;
+    outline: none;
   }
 }
 

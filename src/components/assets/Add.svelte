@@ -1,6 +1,10 @@
+<script>
+  export let height = "2em"
+</script>
+
 <svg
   xmlns="http://www.w3.org/2000/svg"
-  height="2em"
+  height={height}
   viewBox="0 0 20 20"
   fill="currentColor"
 >

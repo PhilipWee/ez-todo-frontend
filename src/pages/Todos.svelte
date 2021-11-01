@@ -1,14 +1,14 @@
 <script lang="ts">
-  import WorkspaceSelect from "../components/WorkspaceSelect.svelte";
   import { getEnv } from "../stores/setup-env";
   import { user, userTodos, workspace } from "../stores/user-data";
   import { customFetch } from "../utils/custom-fetch";
   import SideBarButton from "../components/SideBarButton.svelte";
   import Todo from "../components/Todo.svelte";
-  import NewTask from "../components/assets/NewTask.svelte";
+  import NewTask from "../components/assets/Add.svelte";
   import AddFriend from "../components/assets/AddFriend.svelte";
   import Filter from "../components/assets/Filter.svelte";
   import Logout from "../components/assets/Logout.svelte";
+  import WorkspaceSelect from "../components/WorkspaceSelect.svelte"
 
   let ENV = getEnv();
 
@@ -60,9 +60,9 @@
     {/each}
   </div>
   <div class="col2">
-    <!-- <SideBarButton>
+    <SideBarButton expanded={true}>
       <WorkspaceSelect slot="contents" />
-    </SideBarButton> -->
+    </SideBarButton>
 
     <!-- TODO: Make spacing a little less weird -->
     <SideBarButton onClick={newTask}>

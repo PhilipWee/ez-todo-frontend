@@ -2,9 +2,13 @@
   import { user, workspace, Workspace } from "../stores/user-data";
   import { parse } from "../utils/parse-form-data";
   import { customFetch } from "../utils/custom-fetch";
+  import Clipboard from "./assets/Clipboard.svelte";
 
   const updateWorkspace = async (data) => {
-    const result = await customFetch.patch(`/workspace/${data.id || $workspace.id}`, data);
+    const result = await customFetch.patch(
+      `/workspace/${data.id || $workspace.id}`,
+      data
+    );
     user.update((user) => {
       user.workspaces = user.workspaces.map((workspace) => {
         if (workspace.id === result.id) {
@@ -32,8 +36,10 @@
     //TODO: Fix bugs with creation and deletion
     const result = await customFetch.delete(`/workspace/${id}`);
     if (result.statusCode === 400) {
-        alert("You can't delete a workspace until your todos are done! Finish your work, kid.")
-        return
+      alert(
+        "You can't delete a workspace until your todos are done! Finish your work, kid."
+      );
+      return;
     }
     user.update((user) => {
       user.workspaces = user.workspaces.filter((workspace) => {
@@ -45,17 +51,43 @@
       return user;
     });
   };
+
+  const copyTextToClipboard = async (text: string) => {
+    navigator.clipboard.writeText(text);
+  };
 </script>
 
 <div>
+  {#if $user !== null}
+    <img
+      class="profile-image"
+      src={$user.googleData.photos[0].value}
+      alt={$user.googleData.displayName}
+    />
+    <div>
+      {$user.googleData.displayName}
+    </div>
+    <div
+      class="flex-h"
+      on:click={() => {
+        copyTextToClipboard(String($user.id));
+      }}
+    >
+      <div class="pr-1">
+        User ID: {$user.id}
+      </div>
+      <Clipboard />
+    </div>
+    <br />
+  {/if}
   {#if $workspace !== null}
     <div>Current Workspace</div>
     <form on:submit|preventDefault={onSubmit}>
-      <input name="name" value={$workspace.name} />
+      <input type="text" name="name" value={$workspace.name} />
       <button type="submit" name="update">Update</button>
       <button type="submit" name="create">Create</button>
     </form>
-    <div>All Workspaces</div>
+    <div>Current Workspace</div>
     {#each $user.workspaces as userWorkspace}
       <button
         on:click={() => {
@@ -78,3 +110,19 @@
   {/if}
 </div>
 
+<style lang="scss">
+  // @import "../theme/default.scss"
+  .flex-h {
+    display: flex;
+    flex-direction: row;
+  }
+
+  .pr-1 {
+    padding-right: 1em;
+  }
+
+  .profile-image {
+    height: 2em;
+    width: 2em;
+  }
+</style>
