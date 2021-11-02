@@ -4,18 +4,16 @@
 
   let ENV = getEnv();
 
-  const googleLogin = () => {
-    window.location.href = `${ENV.BACKEND_URL}/user/auth/google/login`;
-    console.log("AIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
-  };
 </script>
 
 <div class="centered-child">
   <div class="padded-center">
     <h1>Complete Tasks. Get Memes.</h1>
-    <Button onClick={googleLogin}>
-      Login with Google
-    </Button>
+    <a href={`${ENV.BACKEND_URL}/user/auth/google/login`}>
+      <Button>
+        Login with Google
+      </Button>
+    </a>
   </div>
 </div>
 

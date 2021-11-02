@@ -1019,10 +1019,8 @@ var app = (function () {
     	let span1;
     	let div;
     	let current;
-    	let mounted;
-    	let dispose;
-    	const default_slot_template = /*#slots*/ ctx[2].default;
-    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[1], null);
+    	const default_slot_template = /*#slots*/ ctx[1].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[0], null);
 
     	const block = {
     		c: function create() {
@@ -1033,13 +1031,13 @@ var app = (function () {
     			div = element("div");
     			if (default_slot) default_slot.c();
     			attr_dev(span0, "class", "edge svelte-bz6d66");
-    			add_location(span0, file$f, 4, 2, 100);
+    			add_location(span0, file$f, 1, 2, 29);
     			attr_dev(div, "class", "font-mont");
-    			add_location(div, file$f, 6, 4, 151);
+    			add_location(div, file$f, 3, 4, 80);
     			attr_dev(span1, "class", "front svelte-bz6d66");
-    			add_location(span1, file$f, 5, 2, 125);
+    			add_location(span1, file$f, 2, 2, 54);
     			attr_dev(button, "class", "pushable svelte-bz6d66");
-    			add_location(button, file$f, 3, 0, 52);
+    			add_location(button, file$f, 0, 0, 0);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1056,35 +1054,18 @@ var app = (function () {
     			}
 
     			current = true;
-
-    			if (!mounted) {
-    				dispose = listen_dev(
-    					button,
-    					"click",
-    					function () {
-    						if (is_function(/*onClick*/ ctx[0])) /*onClick*/ ctx[0].apply(this, arguments);
-    					},
-    					false,
-    					false,
-    					false
-    				);
-
-    				mounted = true;
-    			}
     		},
-    		p: function update(new_ctx, [dirty]) {
-    			ctx = new_ctx;
-
+    		p: function update(ctx, [dirty]) {
     			if (default_slot) {
-    				if (default_slot.p && (!current || dirty & /*$$scope*/ 2)) {
+    				if (default_slot.p && (!current || dirty & /*$$scope*/ 1)) {
     					update_slot_base(
     						default_slot,
     						default_slot_template,
     						ctx,
-    						/*$$scope*/ ctx[1],
+    						/*$$scope*/ ctx[0],
     						!current
-    						? get_all_dirty_from_scope(/*$$scope*/ ctx[1])
-    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[1], dirty, null),
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[0])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[0], dirty, null),
     						null
     					);
     				}
@@ -1102,8 +1083,6 @@ var app = (function () {
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(button);
     			if (default_slot) default_slot.d(detaching);
-    			mounted = false;
-    			dispose();
     		}
     	};
 
@@ -1121,35 +1100,23 @@ var app = (function () {
     function instance$f($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Button', slots, ['default']);
-    	let { onClick } = $$props;
-    	const writable_props = ['onClick'];
+    	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Button> was created with unknown prop '${key}'`);
     	});
 
     	$$self.$$set = $$props => {
-    		if ('onClick' in $$props) $$invalidate(0, onClick = $$props.onClick);
-    		if ('$$scope' in $$props) $$invalidate(1, $$scope = $$props.$$scope);
+    		if ('$$scope' in $$props) $$invalidate(0, $$scope = $$props.$$scope);
     	};
 
-    	$$self.$capture_state = () => ({ onClick });
-
-    	$$self.$inject_state = $$props => {
-    		if ('onClick' in $$props) $$invalidate(0, onClick = $$props.onClick);
-    	};
-
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	return [onClick, $$scope, slots];
+    	return [$$scope, slots];
     }
 
     class Button extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$f, create_fragment$f, safe_not_equal, { onClick: 0 });
+    		init(this, options, instance$f, create_fragment$f, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
@@ -1157,30 +1124,13 @@ var app = (function () {
     			options,
     			id: create_fragment$f.name
     		});
-
-    		const { ctx } = this.$$;
-    		const props = options.props || {};
-
-    		if (/*onClick*/ ctx[0] === undefined && !('onClick' in props)) {
-    			console.warn("<Button> was created without expected prop 'onClick'");
-    		}
-    	}
-
-    	get onClick() {
-    		throw new Error("<Button>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
-    	}
-
-    	set onClick(value) {
-    		throw new Error("<Button>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
     /* src\pages\Login.svelte generated by Svelte v3.44.0 */
-
-    const { console: console_1$3 } = globals;
     const file$e = "src\\pages\\Login.svelte";
 
-    // (13:4) <Button onClick={googleLogin}>
+    // (10:6) <Button>
     function create_default_slot$1(ctx) {
     	let t;
 
@@ -1200,7 +1150,7 @@ var app = (function () {
     		block,
     		id: create_default_slot$1.name,
     		type: "slot",
-    		source: "(13:4) <Button onClick={googleLogin}>",
+    		source: "(10:6) <Button>",
     		ctx
     	});
 
@@ -1212,12 +1162,12 @@ var app = (function () {
     	let div0;
     	let h1;
     	let t1;
+    	let a;
     	let button;
     	let current;
 
     	button = new Button({
     			props: {
-    				onClick: /*googleLogin*/ ctx[0],
     				$$slots: { default: [create_default_slot$1] },
     				$$scope: { ctx }
     			},
@@ -1231,13 +1181,17 @@ var app = (function () {
     			h1 = element("h1");
     			h1.textContent = "Complete Tasks. Get Memes.";
     			t1 = space();
+    			a = element("a");
     			create_component(button.$$.fragment);
     			attr_dev(h1, "class", "svelte-1uy1nql");
-    			add_location(h1, file$e, 11, 4, 386);
+    			add_location(h1, file$e, 7, 4, 215);
+    			attr_dev(a, "href", `${/*ENV*/ ctx[0].BACKEND_URL}/user/auth/google/login`);
+    			attr_dev(a, "class", "svelte-1uy1nql");
+    			add_location(a, file$e, 8, 4, 256);
     			attr_dev(div0, "class", "padded-center svelte-1uy1nql");
-    			add_location(div0, file$e, 10, 2, 353);
+    			add_location(div0, file$e, 6, 2, 182);
     			attr_dev(div1, "class", "centered-child svelte-1uy1nql");
-    			add_location(div1, file$e, 9, 0, 321);
+    			add_location(div1, file$e, 5, 0, 150);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1247,13 +1201,14 @@ var app = (function () {
     			append_dev(div1, div0);
     			append_dev(div0, h1);
     			append_dev(div0, t1);
-    			mount_component(button, div0, null);
+    			append_dev(div0, a);
+    			mount_component(button, a, null);
     			current = true;
     		},
     		p: function update(ctx, [dirty]) {
     			const button_changes = {};
 
-    			if (dirty & /*$$scope*/ 4) {
+    			if (dirty & /*$$scope*/ 2) {
     				button_changes.$$scope = { dirty, ctx };
     			}
 
@@ -1289,29 +1244,23 @@ var app = (function () {
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Login', slots, []);
     	let ENV = getEnv();
-
-    	const googleLogin = () => {
-    		window.location.href = `${ENV.BACKEND_URL}/user/auth/google/login`;
-    		console.log("AIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII");
-    	};
-
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1$3.warn(`<Login> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<Login> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ getEnv, Button, ENV, googleLogin });
+    	$$self.$capture_state = () => ({ getEnv, Button, ENV });
 
     	$$self.$inject_state = $$props => {
-    		if ('ENV' in $$props) ENV = $$props.ENV;
+    		if ('ENV' in $$props) $$invalidate(0, ENV = $$props.ENV);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	return [googleLogin];
+    	return [ENV];
     }
 
     class Login extends SvelteComponentDev {

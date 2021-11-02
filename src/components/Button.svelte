@@ -1,8 +1,4 @@
-<script lang="ts">
-  export let onClick: (e) => any;
-</script>
-
-<button class="pushable" on:click={onClick}>
+<button class="pushable">
   <span class="edge" />
   <span class="front">
     <div class="font-mont">
