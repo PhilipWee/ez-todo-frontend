@@ -6,6 +6,7 @@
 
   const googleLogin = () => {
     window.location.href = `${ENV.BACKEND_URL}/user/auth/google/login`;
+    console.log("AIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
   };
 </script>
 
