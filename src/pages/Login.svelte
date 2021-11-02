@@ -1,11 +1,11 @@
-<script>
+<script lang='ts'>
   import { getEnv } from "../stores/setup-env";
   import Button from "../components/Button.svelte"
 
   let ENV = getEnv();
 
   const googleLogin = () => {
-    window.location = `${ENV.BACKEND_URL}/user/auth/google/login`;
+    window.location.href = `${ENV.BACKEND_URL}/user/auth/google/login`;
   };
 </script>
 
