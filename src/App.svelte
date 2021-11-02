@@ -7,7 +7,13 @@
   const fetchProfile = user.refresh();
 </script>
 
-<Modal>
+<Modal 
+styleWindow={{
+  // border: '2px solid #00beff',
+  // boxShadow: 'inset 0 0 0 2px white, 0 0 0 2px white',
+  background: "rgb(58, 60, 65)"
+}}
+>
   <div class="outer-container">
     <div class="max-width-lg">
       {#await fetchProfile}

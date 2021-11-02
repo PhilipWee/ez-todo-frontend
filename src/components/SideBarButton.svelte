@@ -1,12 +1,12 @@
 <script lang="ts">
   export let onClick: (e) => any = () => {};
-  export let expanded: boolean = false;
+  export let vertical: boolean = false
 </script>
 
 <div class="sidebar" on:click={onClick}>
-  <div class="inner">
+  <div class:inner={true} class:vertical>
     <slot name="logo" />
-    <div class:contents={!expanded}>
+    <div class="contents">
       <slot name="contents" />
     </div>
   </div>
@@ -35,6 +35,12 @@
     z-index: 1;
     transition: 0.1s;
 
+    @media (min-width: $small-bp) {
+      .contents {
+        display: block;
+      }
+    }
+
     &:hover {
       background: darken($bright-gray, 5%);
       transition: 0.3s;
@@ -59,5 +65,9 @@
     align-items: center;
     flex-direction: row;
     display: flex;
+  }
+
+  .vertical {
+    display: block;
   }
 </style>

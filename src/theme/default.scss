@@ -5,6 +5,11 @@ $off-white: #f5f7f6;
 $off-white-dark: #cecece;
 $bright-gray: rgb(58, 60, 65);
 $dark: #292b36;
+$radius: 0.5em;
+$base-fg: $off-white;
+$base-bg: $dark;
+$accent-fg: $off-white;
+$accent-bg: $dark;
 
 // Fonts
 
@@ -37,6 +42,62 @@ input[type="text"] {
 
   &:focus {
     outline: none;
+  }
+}
+
+//Custom Buttons
+
+button {
+  font-family: "Montserrat", sans-serif;
+  color: $base-fg;
+  background-color: $base-bg;
+  border: 1px solid $base-fg;
+  padding: 1em 0.5em 1em 0.5em;
+  border-radius: $radius;
+  transition: 0.3s;
+
+  &:hover {
+    background: darken($base-bg, 5%);
+    transition: 0.3s;
+  }
+}
+
+//Select Hack
+
+select {
+  font-family: "Montserrat", sans-serif;
+  -webkit-appearance: none;
+  appearance: none;
+  color: $base-fg;
+  border: 1px solid $base-fg;
+  line-height: 1;
+  outline: 0;
+  padding: 1em 0.5em 1em 0.5em;
+  border-radius: $radius;
+  background-color: $base-bg;
+  background-image: linear-gradient($base-fg, $base-fg),
+    linear-gradient(-135deg, transparent 50%, $accent-bg, 50%),
+    linear-gradient(-225deg, transparent 50%, $accent-bg, 50%),
+    linear-gradient($accent-bg 42%, $accent-fg, 42%);
+  background-repeat: no-repeat, no-repeat, no-repeat, no-repeat;
+  background-size: 1px 100%, 20px 22px, 20px 22px, 20px 100%;
+  background-position: right 20px center, right bottom, right bottom,
+    right bottom;
+  &:hover {
+    background-image: linear-gradient($accent-fg, $accent-fg),
+      linear-gradient(-135deg, transparent 50%, $accent-fg, 50%),
+      linear-gradient(-225deg, transparent 50%, $accent-fg, 50%),
+      linear-gradient($accent-fg 42%, $accent-bg, 42%);
+  }
+
+  &:active {
+    background-image: linear-gradient($accent-fg, $accent-fg),
+      linear-gradient(-135deg, transparent 50%, $accent-fg, 50%),
+      linear-gradient(-225deg, transparent 50%, $accent-fg, 50%),
+      linear-gradient($accent-fg 42%, $accent-bg, 42%);
+    color: $accent-bg;
+    border-color: $accent-fg;
+    background-color: $accent-fg;
   }
 }
 

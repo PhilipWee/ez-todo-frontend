@@ -8,7 +8,7 @@
   import AddFriend from "../components/assets/AddFriend.svelte";
   import Filter from "../components/assets/Filter.svelte";
   import Logout from "../components/assets/Logout.svelte";
-  import WorkspaceSelect from "../components/WorkspaceSelect.svelte"
+  import WorkspaceSelect from "../components/WorkspaceSelect.svelte";
 
   let ENV = getEnv();
 
@@ -60,26 +60,34 @@
     {/each}
   </div>
   <div class="col2">
-    <SideBarButton expanded={true}>
+    <SideBarButton vertical={true}>
+      <img
+        slot="logo"
+        class="profile-image"
+        src={$user.googleData.photos[0].value}
+        alt={$user.googleData.displayName}
+      />
       <WorkspaceSelect slot="contents" />
     </SideBarButton>
+    <!-- TODO: Implement Filtering -->
+    <!-- <SideBarButton>
+      <Filter slot="logo" />
+      <div slot="contents">Filter</div>
+    </SideBarButton> -->
 
     <!-- TODO: Make spacing a little less weird -->
     <SideBarButton onClick={newTask}>
       <NewTask slot="logo" />
-      <div slot="contents">New Task</div>
+      <div class="pl-1" slot="contents">New Task</div>
     </SideBarButton>
     <SideBarButton onClick={addToWorkspaceAlert}>
       <AddFriend slot="logo" />
-      <div slot="contents">Invite Friend</div>
+      <div class="pl-1" slot="contents">Invite Friend</div>
     </SideBarButton>
-    <SideBarButton>
-      <Filter slot="logo" />
-      <div slot="contents">Filter</div>
-    </SideBarButton>
+
     <SideBarButton onClick={logout}>
       <Logout slot="logo" />
-      <div slot="contents">Logout</div>
+      <div class="pl-1" slot="contents">Logout</div>
     </SideBarButton>
   </div>
 </div>
@@ -89,6 +97,10 @@
 
   .container {
     display: flex;
+  }
+  
+  .pl-1 {
+    padding-left: 1em;
   }
 
   .col1 {
@@ -109,5 +121,10 @@
     .col2 {
       width: 20em;
     }
+  }
+
+  .profile-image {
+    height: 2em;
+    width: 2em;
   }
 </style>

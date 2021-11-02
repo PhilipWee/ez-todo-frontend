@@ -61,6 +61,7 @@
     //@ts-ignore
     logLevel: "ERROR",
     placeholder: "Task Description",
+    minHeight: 0
   });
 
   let expandedView: boolean = false;
@@ -112,7 +113,7 @@
         class:editor={"editor"}
         class:expanded={expandedView}
       />
-      {#if expandedView}
+      <!-- {#if expandedView}
         <div class="container">
           <div class="item-6" />
           <div class="item-6">
@@ -120,8 +121,8 @@
             <p>Today la fak</p>
           </div>
         </div>
-      {/if}
-      <div class="container">
+      {/if} -->
+      <div class="container pt-1">
         <div class="bottom-text pr-1">{todoData.workspace.name}</div>
         <div class="container grow" on:click={showAssignTodoPopup}>
           {#each todoData.assignees || [] as assignee}
@@ -138,12 +139,13 @@
           </div>
         </div>
         <select
+          class="mr-1"
           on:change={(e) => onUpdate("priority", e.target["value"])}
           value={todoData.priority}
         >
-          <option value="low">Low</option>
-          <option value="med">Medium</option>
-          <option value="high">High</option>
+          <option value="low">Low Priority</option>
+          <option value="med">Medium Priority</option>
+          <option value="high">High Priority</option>
         </select>
         <div>
           <button on:click={onDelete}>Delete</button>
@@ -159,6 +161,14 @@
   $radius: 15px;
   $border-width: 2px;
   $transition-time: 0.5s;
+
+  .pt-1 {
+    padding-top: 0.5em;
+  }
+
+  .mr-1 {
+    margin-right: 0.5em;
+  }
 
   .pr-1 {
     padding-right: 0.5em;
@@ -211,7 +221,7 @@
 
   .editor {
     overflow-y: scroll;
-    height: 2rem;
+    // height: 2rem;
     font-size: medium;
     color: $off-white-dark;
     padding-right: 2rem;
@@ -219,7 +229,7 @@
   }
 
   .expanded {
-    height: 200px;
+    // height: 200px;
     transition: 0.3s;
   }
 

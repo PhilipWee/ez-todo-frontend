@@ -48,13 +48,13 @@
   </div>
   {#each workspaceUsers as workspaceUser}
     <div class="container">
-      <div>{getDisplayName(workspaceUser)}</div>
-      <div class="expand">
-        <img
-          class="image"
-          src={getImageURL(workspaceUser)}
-          alt={getDisplayName(workspaceUser)}
-        />
+      <img
+        class="image"
+        src={getImageURL(workspaceUser)}
+        alt={getDisplayName(workspaceUser)}
+      />
+      <div class="expand pl-1">
+        <div>{getDisplayName(workspaceUser)}</div>
       </div>
       <input
         on:change={(e) => setUserAssigned(workspaceUser, e.target["checked"])}
@@ -66,9 +66,15 @@
 {/await}
 
 <style lang="scss">
+  @import "../theme/default.scss";
+
   .container {
     display: flex;
     flex-direction: row;
+  }
+
+  .pl-1 {
+    padding-left: 1em
   }
 
   .expand {
@@ -76,7 +82,6 @@
   }
 
   .image {
-    padding-left: 1em;
     height: 1em;
     width: 1em;
   }

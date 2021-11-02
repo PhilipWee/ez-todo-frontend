@@ -1,34 +1,18 @@
 <script lang="ts">
+  import { getContext } from "svelte";
   import { user, workspace, Workspace } from "../stores/user-data";
-  import { parse } from "../utils/parse-form-data";
   import { customFetch } from "../utils/custom-fetch";
   import Clipboard from "./assets/Clipboard.svelte";
+  import WorkspaceUpdater from "./WorkspaceUpdater.svelte";
 
-  const updateWorkspace = async (data) => {
-    const result = await customFetch.patch(
-      `/workspace/${data.id || $workspace.id}`,
-      data
-    );
-    user.update((user) => {
-      user.workspaces = user.workspaces.map((workspace) => {
-        if (workspace.id === result.id) {
-          workspace = result;
-        }
-        return workspace;
-      });
-      return user;
-    });
+  const { open } = getContext("simple-modal");
+
+  const openUpdateDialog = () => {
+    open(WorkspaceUpdater, { mode: "update" });
   };
 
-  const onSubmit = async (e) => {
-    const data = parse<Workspace>(e);
-    if (e.submitter.name === "update") {
-      await updateWorkspace(data);
-    } else if (e.submitter.name === "create") {
-      const newWorkspace = await user.newWorkspace();
-      newWorkspace.name = data.name;
-      await updateWorkspace(newWorkspace);
-    }
+  const openCreateDialog = () => {
+    open(WorkspaceUpdater, { mode: "create" });
   };
 
   const deleteWorkspace = async (id: number) => {
@@ -37,33 +21,28 @@
     const result = await customFetch.delete(`/workspace/${id}`);
     if (result.statusCode === 400) {
       alert(
-        "You can't delete a workspace until your todos are done! Finish your work, kid."
+        "You can't delete a workspace until your todos are deleted! Finish your work, kid."
       );
       return;
     }
-    user.update((user) => {
-      user.workspaces = user.workspaces.filter((workspace) => {
-        if (workspace.id === id) {
-          return false;
-        }
-        return true;
-      });
-      return user;
-    });
+    await user.refresh();
   };
 
   const copyTextToClipboard = async (text: string) => {
     navigator.clipboard.writeText(text);
   };
+
+  const setWorkspace = (workspaceId: number) => {
+    const curWorkspace = $user.workspaces.find((userWorkspace) => {
+      return String(userWorkspace.id) === String(workspaceId);
+    });
+    workspace.set(curWorkspace);
+  };
 </script>
 
 <div>
   {#if $user !== null}
-    <img
-      class="profile-image"
-      src={$user.googleData.photos[0].value}
-      alt={$user.googleData.displayName}
-    />
+    
     <div>
       {$user.googleData.displayName}
     </div>
@@ -82,36 +61,40 @@
   {/if}
   {#if $workspace !== null}
     <div>Current Workspace</div>
-    <form on:submit|preventDefault={onSubmit}>
-      <input type="text" name="name" value={$workspace.name} />
-      <button type="submit" name="update">Update</button>
-      <button type="submit" name="create">Create</button>
-    </form>
-    <div>Current Workspace</div>
-    {#each $user.workspaces as userWorkspace}
-      <button
-        on:click={() => {
-          workspace.set(userWorkspace);
-        }}
+    <div class="pt-1 flex-h">
+      <select class="grow" on:change={(e) => setWorkspace(e.target["value"])}>
+        {#each $user.workspaces as userWorkspace}
+          <option value={userWorkspace.id}>{userWorkspace.name}</option>
+        {/each}
+      </select>
+    </div>
+    <div class="pt-1 flex-h">
+      <button class="mr-1" name="update" on:click={openUpdateDialog}
+        >Update</button
       >
-        {userWorkspace.name}
-      </button>
+      <button class="mr-1" name="create" on:click={openCreateDialog}
+        >Create</button
+      >
       <button
         on:click={() => {
-          deleteWorkspace(userWorkspace.id);
+          deleteWorkspace($workspace.id);
         }}
       >
         Delete
       </button>
-      <br />
-    {/each}
+    </div>
   {:else}
     <div>Loading</div>
   {/if}
 </div>
 
 <style lang="scss">
-  // @import "../theme/default.scss"
+  @import "../theme/default.scss";
+
+  .grow {
+    flex-grow: 1;
+  }
+
   .flex-h {
     display: flex;
     flex-direction: row;
@@ -121,8 +104,13 @@
     padding-right: 1em;
   }
 
-  .profile-image {
-    height: 2em;
-    width: 2em;
+  .mr-1 {
+    margin-right: 1em;
   }
+
+  .pt-1 {
+    padding-top: 1em;
+  }
+
+  
 </style>
